@@ -1,0 +1,32 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "description": "ts-microservice-gateway",
+  "main": "index.js",
+  "dependencies": {
+    "cookie-parser": "^1.4.4",
+    "express": "^4.16.4",
+    "express-http-proxy": "^1.5.1",
+    "helmet": "^3.18.0",
+    "http": "^0.0.0",
+    "morgan": "^1.9.1",
+    "nodemon": "^1.19.0",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "Weslley Pereira",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weslleyinf/ts-gateway.git"
+  },
+  "bugs": {
+    "url": "https://github.com/weslleyinf/ts-gateway/issues"
+  },
+  "homepage": "https://github.com/weslleyinf/ts-gateway#readme"
+}
