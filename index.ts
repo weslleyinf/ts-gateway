@@ -1,6 +1,7 @@
 import { AssemblyRouter } from './src/router/assembly-router';
 import { IRouter } from './src/router/i.router';
 import { Server, createServer } from 'http';
+import { of } from './src/shared/utils';
 import express from 'express';
 // import httpProxy from 'express-http-proxy';
 import cookieParser from 'cookie-parser';
@@ -16,15 +17,11 @@ const port:number = 3000;
 //   userServiceProxy(req, res, next);
 // })
 
-app.use('/', async (req, res, next) =>{
-  try{
+app.use('/', async (req, res, next) => {
     const router: IRouter = new AssemblyRouter(app);
-    await router.generatePipeline(req, res, next);
+    const [err] = await of(router.generatePipeline(req, res, next));
+    if(err) res.status(404).json(err);
     next();
-  } catch(err) {
-    console.log('err: ', err);
-    res.status(404).json(err);
-  }
 });
 
 app.use(logger('dev'));

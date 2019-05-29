@@ -1,4 +1,4 @@
-
+import { NextFunction, Response, Request } from 'express';
 export interface IRouter {
-    generatePipeline(req: any, res: any, next:any): void
+    generatePipeline(req: Request, res: Response, next:NextFunction): Promise<any>
 }
