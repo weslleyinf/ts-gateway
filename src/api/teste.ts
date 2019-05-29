@@ -1,13 +1,16 @@
-import { ControllerViewModel } from "../models/controller/controller.vm";
-import { IControllerViewModel } from "../models/controller/i.controller.vm";
+import { NextFunction, Response, Request } from 'express';
+import { NodeViewModel } from "../models/node/node.vm";
+import { INodeViewModel } from "../models/node/i.node.vm";
+import { INodeOptionsViewModel } from "../models/node/I.node.optionvm";
 
 export class TesteController {
     constructor() { }
 
-    getTeste: IControllerViewModel = new ControllerViewModel({
-        method: 'GET',
-        exec: () => {
+    hit: INodeViewModel = new NodeViewModel({
+        method: 'post',
+        exec: (req: Request, res: Response, next:NextFunction) => {
             console.log('success!');
+            next();
         }
-    } as IControllerViewModel);
+    } as INodeOptionsViewModel);
 }

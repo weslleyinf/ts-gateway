@@ -1,4 +1,4 @@
-export interface IControllerViewModel {
+export interface INodeOptionsViewModel {
     method: string;
     exec: Function;
 }

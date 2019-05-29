@@ -17,11 +17,11 @@ const port:number = 3000;
 //   userServiceProxy(req, res, next);
 // })
 
-app.use('/', async (req, res, next) => {
-    const router: IRouter = new AssemblyRouter(app);
-    const [err] = await of(router.generatePipeline(req, res, next));
-    if(err) res.status(404).json(err);
-    next();
+app.use('/api', async (req, res, next) => {
+  const router: IRouter = new AssemblyRouter(app);
+  const err = await of(router.generatePipeline(req, res, next));
+  if(err) res.status(404).json(err);
+  else next();
 });
 
 app.use(logger('dev'));
