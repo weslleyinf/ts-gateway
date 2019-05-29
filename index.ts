@@ -1,5 +1,5 @@
 import { AssemblyRouter } from './src/router/assembly-router';
-import { IRouter } from './src/router/i-router';
+import { IRouter } from './src/router/i.router';
 import { Server, createServer } from 'http';
 import express from 'express';
 // import httpProxy from 'express-http-proxy';

@@ -1,5 +1,5 @@
 import { Application, NextFunction, Response } from 'express';
-import { IRouter } from './i-router';
+import { IRouter } from './i.router';
 import { readdir, readFile } from 'fs';
 import { strict, rejects } from 'assert';
 
@@ -21,13 +21,10 @@ export class AssemblyRouter implements IRouter {
 
     private async getControllet(url: string): Promise<void|string> {
         const pathRoute: string[] = url.split('/');
-        const FunctionName: string = pathRoute.pop() || '';
+        const functionName: string = pathRoute.pop() || '';
 
         return new Promise((resolve, reject) => {
-            readFile('./src' + pathRoute.join('/'), (err, file) => {
-                if(err) return reject('Caminho Não encontrado: ' + url)
-                resolve();
-            })
+            resolve();
         })   
     }
 }
