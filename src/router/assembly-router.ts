@@ -1,10 +1,9 @@
-import { Application, NextFunction, Response, Request } from 'express';
+import { Application, NextFunction, Response, Request, Router } from 'express';
+import { MiddlewareDictionary } from '../dictionary/middleware.dictionary';
+import { INodeViewModel } from '../models/node/i.node.vm';
 import { readFile } from 'fs';
 import { IRouter } from './i.router';
 import { of } from '../shared/utils';
-import { INodeViewModel } from '../models/node/i.node.vm';
-import { TesteController } from '../api/teste';
-import { NodeViewModel } from '../models/node/node.vm';
 
 export class AssemblyRouter implements IRouter {
     constructor(private app: Application) { }
@@ -26,12 +25,13 @@ export class AssemblyRouter implements IRouter {
             if(controller.getMethod() != req.method) 
                 return reject({message: 'Método incorreto'});
 
-            // this.app[application[controller.method]]('/', controller.exec);
-            return resolve();
-            // this.app.use('/api', async (req, res, next) => {
-            //     console.log('req: ');
-            //     res.end();
-            // })
+            let [err4, middleware] = await of(this.getMiddleware(controller.middleware));
+            if(err4) return reject({message: err4});
+
+            middleware.push(controller.exec);
+            const routerTo: string = req.baseUrl + req.url;
+            this.app.get(routerTo, middleware);
+            return resolve(routerTo);
         });
     }
 
@@ -59,5 +59,17 @@ export class AssemblyRouter implements IRouter {
 
             resolve(controller[controlerKeys[index]] as INodeViewModel);
         });
+    }
+
+    private async getMiddleware(middleware: string[]) {
+        const middlewareKeys: string[] = Object.keys(MiddlewareDictionary);
+        return Promise.all(middleware.map(x => 
+            new Promise((resolve, reject) => {
+                const index: number = middlewareKeys.indexOf(x);
+                if(index == -1)  return reject('Micro serviço não encontrado');
+
+                return resolve(MiddlewareDictionary[x]);
+            })
+        ));
     }
 }

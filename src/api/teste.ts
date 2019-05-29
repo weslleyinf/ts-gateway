@@ -7,10 +7,11 @@ export class TesteController {
     constructor() { }
 
     hit: INodeViewModel = new NodeViewModel({
-        method: 'post',
+        method: 'get',
+        middleware: ['product'],
         exec: (req: Request, res: Response, next:NextFunction) => {
             console.log('success!');
-            next();
+            res.end();
         }
     } as INodeOptionsViewModel);
 }

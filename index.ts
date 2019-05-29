@@ -19,7 +19,7 @@ const port:number = 3000;
 
 app.use('/api', async (req, res, next) => {
   const router: IRouter = new AssemblyRouter(app);
-  const err = await of(router.generatePipeline(req, res, next));
+  const [err] = await of(router.generatePipeline(req, res, next));
   if(err) res.status(404).json(err);
   else next();
 });
