@@ -8,8 +8,8 @@ export class TesteController {
 
     hit: INodeViewModel = new NodeViewModel({
         method: 'get',
-        middleware: ['product'],
-        exec: (req: Request, res: Response, next:NextFunction) => {
+        middlewares: ['teste'],
+        exec: (req, res: Response, next:NextFunction) => {
             console.log('success!');
             res.end();
         }

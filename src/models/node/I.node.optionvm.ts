@@ -1,5 +1,7 @@
+import { RequestHandler } from "express-serve-static-core";
+
 export interface INodeOptionsViewModel {
     method: string;
-    middleware: string[];
-    exec: Function;
+    middlewares: string[];
+    exec: RequestHandler;
 }

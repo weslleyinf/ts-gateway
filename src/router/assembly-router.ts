@@ -1,37 +1,45 @@
 import { Application, NextFunction, Response, Request, Router } from 'express';
 import { MiddlewareDictionary } from '../dictionary/middleware.dictionary';
-import { INodeViewModel } from '../models/node/i.node.vm';
 import { readFile } from 'fs';
 import { IRouter } from './i.router';
 import { of } from '../shared/utils';
+import { NodeViewModel } from '../models/node/node.vm';
 
 export class AssemblyRouter implements IRouter {
     constructor(private app: Application) { }
 
-    async generatePipeline(req: Request, res: Response, next:NextFunction): Promise<any>{
+    async generatePipeline(req: any, res: Response, next:NextFunction): Promise<any>{
         return new Promise(async (resolve, reject) => {
+            let err: string;
+            // console.log(req.originalUrl);
             const urlParts: string[] = req.url.split('/');
             const methodName: string = urlParts.pop() || '';
 
-            let [err, pathUrl] = await of(this.GetPathUrl(req.baseUrl, urlParts));
+            let pathUrl: string;
+            [err, pathUrl] = await of(this.GetPathUrl(req.baseUrl, urlParts));
             if(err) return reject({message: err});
 
-            let [err2, file] = await of(import(pathUrl));
-            if(err2) return reject({message: err2});
+            let file: any;
+            [err, file] = await of(import(pathUrl));
+            if(err) return reject({message: err});
             
-            let [err3, controller] = await of(this.getController(file, methodName));
-            if(err3) return reject({message: err3});
+            let controller: NodeViewModel;
+            [err, controller] = await of(this.getController(file, methodName));
+            if(err) return reject({message: err});
 
             if(controller.getMethod() != req.method) 
                 return reject({message: 'Método incorreto'});
 
-            let [err4, middleware] = await of(this.getMiddleware(controller.middleware));
-            if(err4) return reject({message: err4});
+            let middlewares: [any];
+            [err, middlewares] = await of(this.getMiddleware(controller.middlewares));
+            if(err) return reject({message: err});
 
-            middleware.push(controller.exec);
+            middlewares.push(controller.exec);
             const routerTo: string = req.baseUrl + req.url;
-            this.app.get(routerTo, middleware);
-            return resolve(routerTo);
+
+            req['originUrl'] = req.url;
+            this.app.all(routerTo, middlewares);
+            return resolve();
         });
     }
 
@@ -45,7 +53,7 @@ export class AssemblyRouter implements IRouter {
         })   
     }
 
-    private async getController(file: any, method: string): Promise<INodeViewModel|string> {
+    private async getController(file: any, method: string): Promise<NodeViewModel|string> {
         return new Promise((resolve, reject) => {
             const keys: string[] = Object.keys(file);
             if(!keys || keys.length == 0) return reject('Arquivo vazio');
@@ -57,13 +65,15 @@ export class AssemblyRouter implements IRouter {
             const index: number = controlerKeys.indexOf(method);
             if(index == -1) return reject('Request não encontrada');
 
-            resolve(controller[controlerKeys[index]] as INodeViewModel);
+            resolve(controller[controlerKeys[index]] as NodeViewModel);
         });
     }
 
-    private async getMiddleware(middleware: string[]) {
+    private async getMiddleware(middlewares: string[]): Promise<string|{}[]> {
+        if(!middlewares || middlewares.length == 0) return Promise.resolve([]);
+
         const middlewareKeys: string[] = Object.keys(MiddlewareDictionary);
-        return Promise.all(middleware.map(x => 
+        return Promise.all(middlewares.map(x => 
             new Promise((resolve, reject) => {
                 const index: number = middlewareKeys.indexOf(x);
                 if(index == -1)  return reject('Micro serviço não encontrado');

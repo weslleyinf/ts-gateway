@@ -3,7 +3,6 @@ import { IRouter } from './src/router/i.router';
 import { Server, createServer } from 'http';
 import { of } from './src/shared/utils';
 import express from 'express';
-// import httpProxy from 'express-http-proxy';
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import helmet from 'helmet';
@@ -12,16 +11,16 @@ const app: express.Application = express()
 const hostname: string = '127.0.0.1';
 const port:number = 3000;
 
-// const userServiceProxy = httpProxy('http://localhost:3001');
-// app.get('/api', (req, res, next) => {
-//   userServiceProxy(req, res, next);
-// })
-
-app.use('/api', async (req, res, next) => {
+app.all('*', async (req, res, next) => {
   const router: IRouter = new AssemblyRouter(app);
   const [err] = await of(router.generatePipeline(req, res, next));
   if(err) res.status(404).json(err);
   else next();
+});
+
+app.all('/teste', async (req, res, next) => {
+  console.log(req);
+  next();
 });
 
 app.use(logger('dev'));
