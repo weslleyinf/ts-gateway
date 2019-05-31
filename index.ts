@@ -19,7 +19,7 @@ app.all('*', async (req, res, next) => {
 });
 
 app.all('/teste', async (req, res, next) => {
-  console.log(req);
+  console.log('teste');
   next();
 });
 

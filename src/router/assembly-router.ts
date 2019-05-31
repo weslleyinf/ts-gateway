@@ -38,7 +38,7 @@ export class AssemblyRouter implements IRouter {
             const routerTo: string = req.baseUrl + req.url;
 
             req['originUrl'] = req.url;
-            this.app.all(routerTo, middlewares);
+            this.app.use(routerTo, middlewares);
             return resolve();
         });
     }
