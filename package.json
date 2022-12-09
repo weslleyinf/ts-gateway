@@ -11,7 +11,7 @@
     "@types/helmet": "0.0.43",
     "@types/morgan": "^1.7.35",
     "cookie-parser": "^1.4.4",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express-http-proxy": "^1.5.1",
     "fs": "0.0.1-security",
     "helmet": "^3.18.0",
